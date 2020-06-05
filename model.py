@@ -14,6 +14,16 @@ def words_and_emoticons(text):
     for w in words:
         yield w
 
+def formated(raw):
+    """Comment formater into a modifiable list"""
+    comments=[]
+    for i in range(len(raw)):
+            comment = raw[i]
+            comment = comment.lower()
+            comment = comment.rstrip('\\') # remove '\' at the end
+            comments.append(comment)
+    return comments
+
 
 class CommentModel:
     """
@@ -70,7 +80,7 @@ class CommentModel:
                 self.results.append(int(value))
 
     def build(self):
-        """Creating res based on current comments and results"""
+        """Creating model based on current comments and results"""
         self.vectorizer = CountVectorizer(analyzer=words_and_emoticons, binary=False)
         self.vectorizer.fit(self.comments)
 
@@ -95,10 +105,11 @@ class CommentModel:
             self.vectorizer = pickle.load(vectorizer)
 
     def predict(self, test_comments):
+        test_comments = formated(test_comments)
         x_test = self.vectorizer.transform(test_comments)
         predicted = self.model.predict(x_test)
-        # return predicted
-        print(f'predicted: {predicted}')
+        return predicted
+        # print(f'predicted: {predicted}')
 
     def show_score(self, test_comments, test_results):
         x_test = self.vectorizer.transform(test_comments)
@@ -112,21 +123,20 @@ class CommentModel:
         print(self.vectorizer.transform(self.comments).toarray())
 
 
-def main():
+def create():
+    """Function just to create upgraded model"""
     model = CommentModel()
     model.read_txt_comments('res/comments0.txt')
     model.read_txt_results('res/results0.txt')
     model.read_txt_comments('res/comments1.txt')
     model.read_txt_results('res/results1.txt')
+    model.read_txt_comments('res/comments2.txt')
+    model.read_txt_results('res/results2.txt')
+    model.read_txt_comments('res/comments3.txt')
+    model.read_txt_results('res/results3.txt')
+
     model.build()
     model.save()
-    model.show_properties()
-
-    model_2 = CommentModel()
-    model_2.load()
-    model_2.show_properties()
-    model_2.predict(['ok', 'love❤️'])
-    model_2.show_score(['ok', 'love❤️'], [0, 1])
 
 
-main()
+create()
