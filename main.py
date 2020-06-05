@@ -5,7 +5,7 @@ main = Flask(__name__)
 
 @main.route('/activity')
 def activity():
-    with open('data_one_hour_after.csv', newline='') as f:
+    with open('data_one_day.csv', newline='') as f:
         reader = csv.reader(f)
         data = list(reader)
 
