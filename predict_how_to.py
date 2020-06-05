@@ -5,4 +5,3 @@ def main():
     print(model_2.predict(['hi', 'max❤️']))
 
 main()
-

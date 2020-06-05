@@ -137,6 +137,3 @@ def create():
 
     model.build()
     model.save()
-
-
-create()
