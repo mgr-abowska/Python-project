@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h3>Wróć do:</h3>
+<ul>
+    <li><a href="/">Strona główna</a></li><li>
+    <a href="/activity">Wykres aktywności</a></li>
+</ul>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <div id="chart_div"></div>
+<script>google.charts.load('current', {packages: ['corechart', 'bar']});
+google.charts.setOnLoadCallback(drawBarColors);
+
+function drawBarColors() {
+      var data = google.visualization.arrayToDataTable({{g_data|safe}});
+
+      var options = {'height':700,
+        title: 'Ogólne informacje o koncie w roku 2020',
+        chartArea: {width: '60%'},
+        colors: ['#b0120a', '#ffab91', '#FF00FF'],
+        hAxis: {
+          title: '',
+          minValue: 0
+        },
+        vAxis: {
+          title: 'Miesiące'
+        }
+      };
+      var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+      chart.draw(data, options);
+    }
+</script>
+
+</body>
+</html>
