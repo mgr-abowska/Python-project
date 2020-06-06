@@ -1,0 +1,15 @@
+{"driver_path" : "C:\\Users\\Maks\\Desktop\\Inst4b0t\\chrome_driver\\chromedriver.exe",
+        "base_url" : "https://www.instagram.com",
+        "hashtags" : ["surf", "polishgirl", "surf"],
+        "comments" : ["Nice!", "cute", "wow", ";", ":D"],
+        "likes_in_session" : 40,
+        "follows_in_session" : 50,
+        "comments_in_session" : 40,
+        "username" : "garmin1337",
+        "password" : "Qwerty12345",
+        "analyze_post_precentage" : 0.3,
+        "analyze_post_max" : 100,
+        "min_separation_time" : 20,
+        "max_separation_time" :  60,
+        "min_rating" : 0.5
+}
