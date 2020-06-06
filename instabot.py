@@ -6,6 +6,15 @@ import random
 import time
 import shelve
 
+def save(f):
+    def persist(self):
+        self.analyze_profile(self.username)
+        db = shelve.open('statistics')
+        db[time.ctime()] = self.profile_statistics
+        db.close()
+        f(self)
+    return persist
+
 class InstaBot:
     def __init__(self,**kwargs):
         self.__dict__ = kwargs
@@ -322,14 +331,7 @@ class InstaBot:
         return self.driver.find_element_by_xpath\
             ('//*[@id="react-root"]/section/main/div/header/section/ul/li[1]/span/span').text
 
-def save(f):
-    def persist(self):
-        self.analyze_profile(self.username)
-        db = shelve.open('statistics')
-        db[time.ctime()] = self.profile_statistics
-        db.close()
-        self.f()
-    return persist
+
 
 
 
