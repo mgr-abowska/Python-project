@@ -4,31 +4,12 @@ import requests
 import sys
 import random
 import time
-
+import shelve
 
 class InstaBot:
-    def __init__(self):
-
-        self.driver = webdriver.Chrome("C:\\Users\\Maks\\Desktop\\Inst4b0t\\chrome_driver\\chromedriver.exe")
-        self.base_url = 'https://www.instagram.com'
-
-        # do parsowania
-        self.hashtags = ['surf', 'polishgirl', 'surf']
-        self.comments = ['Nice!', 'cute', 'wow', ';]', ':D']
-        self.likes_in_session = 40
-        self.follows_in_session = 50
-        self.comments_in_session = 40 # zawsze <= like in session
-
-        self.username = "garmin1337"
-        self.password = "Qwerty12345"
-        self.analyze_post_precentage = 0.3 # procent analizowanych postow z profilu
-        self.analyze_post_max = 100        # maksymalna ilosc analizowanych postow z profilu
-
-        self.min_separation_time = 20
-        self.max_separation_time =  60 # SEKUNDY!
-
-
-        self.min_rating = 0.5
+    def __init__(self,**kwargs):
+        self.__dict__ = kwargs
+        self.driver = webdriver.Chrome(kwargs["driver_path"])
         # ***
 
     """
@@ -61,10 +42,10 @@ class InstaBot:
     def end_seesion(self):
         self.driver.close()
 
-
     """
     NAV
     """
+    @save
     def start_session(self):
         # -> database zapisz liste followersow/followujacych etc.
         # -> zapisz statystyki naszego profilu czy cos
@@ -217,6 +198,11 @@ class InstaBot:
             average_post_likes = len(each_post_likes)/chosen_post_count
             print(average_post_likes)
 
+            self.profile_statistics={'followers_count':self.get_followers_count(username),
+            'following_count':self.get_following_count(username),
+            'post_count':int(self.get_posts_count(username)),
+            'average_post_likes':0}
+
             return true
 
 
@@ -335,6 +321,15 @@ class InstaBot:
         time.sleep(2)
         return self.driver.find_element_by_xpath\
             ('//*[@id="react-root"]/section/main/div/header/section/ul/li[1]/span/span').text
+
+def save(f):
+    def persist(self):
+        self.analyze_profile(self.username)
+        db = shelve.open('statistics')
+        db[time.ctime()] = self.profile_statistics
+        db.close()
+        self.f()
+    return persist
 
 
 

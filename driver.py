@@ -1,17 +1,17 @@
 import sys
 from instabot import InstaBot
-
+import json
 
 if __name__ == '__main__':
 
-
       command = sys.argv[1]
       if command == '-launch':
-
-            bot = InstaBot()
             path_to_cfg = sys.argv[2]
             # (Kapitan) zaladuj tutaj jsona
-
+            with open(path_to_cfg) as f:
+                  x = f.read()
+            args = json.load(x)
+            bot = InstaBot(**args)
             print(' _____              _    _  _    _       ___   _ \n'
                   '|_   _|            | |  | || |  | |     / _ \ | |\n'
                   '  | |   _ __   ___ | |_ | || |_ | |__  | | | || |_ \n'
