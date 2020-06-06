@@ -1,5 +1,6 @@
 import sys
 from instabot import InstaBot
+import main
 
 
 if __name__ == '__main__':
@@ -26,7 +27,7 @@ if __name__ == '__main__':
 
       elif command == '-analyze':
             print('[->] showing analysis...')
-            # (Maja) format DATA_POCZATKOWA : DATA_KONCOWA analiza
+            main.run(debug=True)
       elif command == '-help' or command == '-?':
             print('[1] Bot launch: \n'
                   '> python driver.py -launch -path_to_cfg [json format]')
