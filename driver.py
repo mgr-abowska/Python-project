@@ -1,18 +1,17 @@
 import sys
 from instabot import InstaBot
-import main
-
+import json
 
 if __name__ == '__main__':
 
-
       command = sys.argv[1]
       if command == '-launch':
-
-            bot = InstaBot()
             path_to_cfg = sys.argv[2]
             # (Kapitan) zaladuj tutaj jsona
-
+            with open(path_to_cfg) as f:
+                  x = f.read()
+            args = json.load(x)
+            bot = InstaBot(**args)
             print(' _____              _    _  _    _       ___   _ \n'
                   '|_   _|            | |  | || |  | |     / _ \ | |\n'
                   '  | |   _ __   ___ | |_ | || |_ | |__  | | | || |_ \n'
@@ -27,7 +26,7 @@ if __name__ == '__main__':
 
       elif command == '-analyze':
             print('[->] showing analysis...')
-            main.run(debug=True)
+            # (Maja) format DATA_POCZATKOWA : DATA_KONCOWA analiza
       elif command == '-help' or command == '-?':
             print('[1] Bot launch: \n'
                   '> python driver.py -launch -path_to_cfg [json format]')
