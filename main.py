@@ -1,6 +1,7 @@
 from flask import Flask, render_template, session, redirect
 import csv
 import auth
+import shelve
 
 main = Flask(__name__)
 
@@ -40,15 +41,22 @@ def activity():
         reader = csv.reader(f)
         data = list(reader)
 
-    [i.pop(3) for i in data]
+    data = []
+    db = shelve.open('db')
+    if db.items == []:
+        return
+        #Brak danych
+    for x in db.items():
+        date,username = x[0].split('||')
+        if usermane.rstrip().lstrip() == session.get('login'):
+            data.append([date,x[1]['followers_count'],x[1]['following_count'],x[1]['post_count'],
+                        x[1]['average_post_likes'],x[1]['comments_analysis']])
+    data.append(['2020-05-12',1,2,3,4,5])
+    data.append(['2020-05-12',3,4,6,7,8])
 
-    for i in data[1:]:
-        for n in range(0, 3):
-            i[n] = int(i[n])
+    print(data)
 
-    # print(data)
-
-    return render_template('chart.html', data=str(data[1:]))
+    return render_template('chart.html', data=str(data))
 
 
 # @main.route('/bot')

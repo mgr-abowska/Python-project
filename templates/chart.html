@@ -13,16 +13,18 @@ google.charts.setOnLoadCallback(drawLogScales);
 
 function drawLogScales() {
       var data = new google.visualization.DataTable();
-      data.addColumn('number', 'godziny');
-      data.addColumn('number', 'Lajki');
-      data.addColumn('number', 'Komentarze');
-
+	  data.addColumn('string', 'data');
+      data.addColumn('number', 'Ilosc obserwujacych');
+      data.addColumn('number', 'Ilosc obserwowanych');
+      data.addColumn('number', 'Ilosc postow');
+      data.addColumn('number', 'Srednia ilosc lajkow');
+      data.addColumn('number', 'Ocena komentarzy');
+		
       data.addRows({{data}});
 
       var options = { 'height':700,
         hAxis: {
           title: 'Czas',
-
         },
         vAxis: {
           title: 'aktywność',

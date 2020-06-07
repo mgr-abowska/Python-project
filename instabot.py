@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import requests
 import sys
 import random
-import time
+import datetime
 import shelve
 
 
@@ -11,9 +11,8 @@ def save(f):
     def persist(self):
         f(self)
         profile_statistics = self.analyze_profile(self.username)
-
         db = shelve.open('statistics')
-        db[(time.ctime(), self.username)] = profile_statistics
+        db[str(datetime.datetime.now())+ '||'+self.username] = profile_statistics
         db.close()
 
     return persist
