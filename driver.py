@@ -3,9 +3,9 @@ import sys
 from instabot import InstaBot
 import json
 import main
+import matplotlib.pyplot as plt
 
-if __name__ == '__main__':
-
+def main():
     command = sys.argv[1]
     if command == '-launch':
 
@@ -25,11 +25,46 @@ if __name__ == '__main__':
         bot.start_session()
 
     elif command == '-analyze':
+        user = sys.argv[2]
         print('[->] showing analysis...')
         main.main.run(debug=True)
+        data = []
+        db = shelve.open('db')
+        if db.items == []:
+            print('brak danych!')
+            return
+        dates = []
+        follows = []
+        likes = []
+        following = []
+        posts = []
+        comments = []
+        for x in db.items():
+            date,username = x[0].split('||')
+            if usermane.rstrip().lstrip() == user:
+                dates.append(date)
+                follows.append(x[1]['followers_count'])
+                following.append(x[1]['following_count'])
+                posts.append(x[1]['post_count'])
+                likes.append(x[1]['average_post_likes'])
+                comments.append(x[1]['comments_analysis'])
+        if dates == []:
+            print('brak danych!')
+            return
+        plot = plt.figure()
+        subplot1 = plot.add_subplot()
+        subplot1.scatter(dates,follows,label='followers')
+        subplot1.scatter(dates,likes,label='average post likes')
+        subplot1.scatter(dates,following,label='following')
+        subplot1.scatter(dates,posts,label='post count')
+        subplot1.scatter(dates,comments,label='comments analisys')
+        plt.show()
+        
     elif command == '-help' or command == '-?':
-        print('[1] Bot launch: \n'
-              '> python driver.py -launch -path_to_cfg [json format]')
-        # (Maja) dopiszcie sobie reszte helpa
+        pass
     else:
         print('[!] \'' + command + '\' is unknown argument.')
+
+if __name__ == '__main__':
+    main()
+    
