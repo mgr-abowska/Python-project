@@ -6,6 +6,7 @@ import random
 import time
 import shelve
 
+
 def save(f):
     def persist(self):
         self.analyze_profile(self.username)
@@ -13,18 +14,22 @@ def save(f):
         db[time.ctime()] = self.profile_statistics
         db.close()
         f(self)
+
     return persist
 
+
 class InstaBot:
-    def __init__(self,**kwargs):
+    def __init__(self, **kwargs):
         self.__dict__ = kwargs
         self.driver = webdriver.Chrome(kwargs["driver_path"])
+        print(self.__dict__, self.base_url)
+        print('test: ' + self.base_url)
+
         # ***
 
     """
     Kontrolki 
     """
-
 
     def login(self):
         print('[->] logging in...')
@@ -54,6 +59,7 @@ class InstaBot:
     """
     NAV
     """
+
     @save
     def start_session(self):
         # -> database zapisz liste followersow/followujacych etc.
@@ -67,14 +73,14 @@ class InstaBot:
         follows_to_go = self.follows_in_session
 
         iteration = 1
-        while max(likes_to_go,follows_to_go) > 0:
+        while max(likes_to_go, follows_to_go) > 0:
 
             print('\n[ --- ITERATION no. ' + str(iteration) + ' --- ]')
-            pic_hrefs = self.prepare_data(max(likes_to_go,follows_to_go))
+            pic_hrefs = self.prepare_data(max(likes_to_go, follows_to_go))
             for pic in pic_hrefs:
 
                 self.driver.get(pic)
-                profile_to_analyze = self.driver.find_element_by_xpath\
+                profile_to_analyze = self.driver.find_element_by_xpath \
                     ('//*[@id="react-root"]/section/main/div/div[1]/article/header/div[2]/div[1]/div/a').text
                 profile_rating = self.analyze_profile(profile_to_analyze)
                 self.driver.back()
@@ -85,16 +91,16 @@ class InstaBot:
 
                     if likes_to_go > 0:
                         time.sleep(2)
-                        self.driver.find_element_by_xpath\
-                            ('//*[@id="react-root"]/section/main/div/div[1]/article/div[2]/section[1]/span[1]/button')\
+                        self.driver.find_element_by_xpath \
+                            ('//*[@id="react-root"]/section/main/div/div[1]/article/div[2]/section[1]/span[1]/button') \
                             .click()
                         likes_to_go -= 1
 
                     time.sleep(2)
 
                     if follows_to_go > 0:
-                        self.driver.find_element_by_xpath\
-                            ('//*[@id="react-root"]/section/main/div/div[1]/article/header/div[2]/div[1]/div[2]/button')\
+                        self.driver.find_element_by_xpath \
+                            ('//*[@id="react-root"]/section/main/div/div[1]/article/header/div[2]/div[1]/div[2]/button') \
                             .click()
                         follows_to_go -= 1
 
@@ -102,8 +108,6 @@ class InstaBot:
                     print('[:/] waiting delay: ' + str("{:.2f}".format(delay / 60)) + ' [min].')
                     time.sleep(delay)
         iteration += 1
-
-
 
     def go_to_user(self, username):
         if self.driver.current_url == self.base_url + '/' + username + '/':
@@ -116,9 +120,9 @@ class InstaBot:
         print('[->] gathering information, traget: ' + str(target_likes) + ' posts.')
 
         result_hrefs = []
-        equal_post_split = max(1, int(target_likes/(len(self.hashtags))))
+        equal_post_split = max(1, int(target_likes / (len(self.hashtags))))
 
-        #hashtags
+        # hashtags
         for hashtag in self.hashtags:
 
             pic_hrefs = []
@@ -167,7 +171,7 @@ class InstaBot:
             print('error')
 
         pic_hrefs = []
-        for i in range(1, max(2, int(post_count/9))):
+        for i in range(1, max(2, int(post_count / 9))):
             try:
                 self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
                 time.sleep(2)
@@ -185,7 +189,7 @@ class InstaBot:
 
         if len(pic_hrefs) != 0:
 
-            #likes
+            # likes
             chosen_post_count = min(int(self.analyze_post_precentage * post_count), self.analyze_post_max)
             chosen_post_indexes = random.sample(
                 range(post_count),
@@ -197,23 +201,22 @@ class InstaBot:
                 picture_url = pic_hrefs[index]
                 self.driver.get(picture_url)
                 time.sleep(2)
-                each_post_likes.append(int(self.driver.find_element_by_xpath\
-                    ('//*[@id="react-root"]/section/main/div/div[1]/article/div[2]/section[2]/div/div/button/span').text))
+                each_post_likes.append(int(self.driver.find_element_by_xpath \
+                                               (
+                                                   '//*[@id="react-root"]/section/main/div/div[1]/article/div[2]/section[2]/div/div/button/span').text))
 
-                #comments
+                # comments
                 print(self.get_comments())
 
-
-            average_post_likes = len(each_post_likes)/chosen_post_count
+            average_post_likes = len(each_post_likes) / chosen_post_count
             print(average_post_likes)
 
-            self.profile_statistics={'followers_count':self.get_followers_count(username),
-            'following_count':self.get_following_count(username),
-            'post_count':int(self.get_posts_count(username)),
-            'average_post_likes':0}
+            self.profile_statistics = {'followers_count': self.get_followers_count(username),
+                                       'following_count': self.get_following_count(username),
+                                       'post_count': int(self.get_posts_count(username)),
+                                       'average_post_likes': 0}
 
             return true
-
 
     def get_comments(self):
 
@@ -248,7 +251,6 @@ class InstaBot:
         except:
             pass
 
-
     def get_followers_list(self, username):
 
         self.go_to_user(username)
@@ -272,8 +274,6 @@ class InstaBot:
         followers_names = [name.text for name in follower_links]
         followers_names = [x for x in followers_names if x != '']
 
-
-
         try:
             self.driver.find_element_by_xpath(
                 '/html/body/div[4]/div/div[1]/div/div[2]/button').click()
@@ -285,7 +285,7 @@ class InstaBot:
     def get_followers_count(self, username):
         self.go_to_user(username)
         time.sleep(2)
-        return self.driver.find_element_by_xpath\
+        return self.driver.find_element_by_xpath \
             ('//*[@id="react-root"]/section/main/div/header/section/ul/li[2]/a/span').text
 
     def get_following_list(self, username):
@@ -305,7 +305,7 @@ class InstaBot:
             return arguments[0].scrollHeight;
             """, scrollbox)
 
-            time.sleep(1) # todo make timeout self.
+            time.sleep(1)  # todo make timeout self.
 
         following_links = scrollbox.find_elements_by_tag_name('a')
         following_names = [name.text for name in following_links]
@@ -322,16 +322,11 @@ class InstaBot:
     def get_following_count(self, username):
         self.go_to_user(username)
         time.sleep(2)
-        return self.driver.find_element_by_xpath\
+        return self.driver.find_element_by_xpath \
             ('//*[@id="react-root"]/section/main/div/header/section/ul/li[3]/a/span').text
 
     def get_posts_count(self, username):
         self.go_to_user(username)
         time.sleep(2)
-        return self.driver.find_element_by_xpath\
+        return self.driver.find_element_by_xpath \
             ('//*[@id="react-root"]/section/main/div/header/section/ul/li[1]/span/span').text
-
-
-
-
-
