@@ -25,7 +25,7 @@ def main():
         bot.start_session()
 
     elif command == '-analyze':
-        username = sys.argv[2]
+        user = sys.argv[2]
         print('[->] showing analysis...')
         main.main.run(debug=True)
         data = []
@@ -33,21 +33,24 @@ def main():
         if db.items == []:
             print('brak danych!')
             return
+        dates = []
+        follows = []
+        likes = []
+        following = []
+        posts = []
+        comments = []
         for x in db.items():
             date,username = x[0].split('||')
-            dates = []
-            follows = []
-            likes = []
-            following = []
-            posts = []
-            comments = []
-            if usermane.rstrip().lstrip() == username:
+            if usermane.rstrip().lstrip() == user:
                 dates.append(date)
                 follows.append(x[1]['followers_count'])
                 following.append(x[1]['following_count'])
                 posts.append(x[1]['post_count'])
                 likes.append(x[1]['average_post_likes'])
                 comments.append(x[1]['comments_analysis'])
+        if dates == []:
+            print('brak danych!')
+            return
         plot = plt.figure()
         subplot1 = plot.add_subplot()
         subplot1.scatter(dates,follows,label='followers')
