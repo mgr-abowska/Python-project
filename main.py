@@ -29,8 +29,6 @@ def general():
         for n in range(0, 4):
             i[n] = int(i[n])
 
-    print(g_data)
-
     return render_template('general.html', g_data=str(g_data))
 
 
@@ -50,13 +48,6 @@ def activity():
 
     return render_template('chart.html', data=str(data[1:]))
 
-
-# @main.route('/bot')
-# def bot():
-
-
-# @main.route('/rating')
-# def rating():
 
 if __name__ == '__main__':
     main.run(debug=True)

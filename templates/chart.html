@@ -14,14 +14,14 @@ google.charts.setOnLoadCallback(drawLogScales);
 function drawLogScales() {
       var data = new google.visualization.DataTable();
       data.addColumn('number', 'godziny');
-      data.addColumn('number', 'Lajki');
+      data.addColumn('number', 'Polubienia');
       data.addColumn('number', 'Komentarze');
 
       data.addRows({{data}});
 
       var options = { 'height':700,
         hAxis: {
-          title: 'Czas',
+          title: 'Data',
 
         },
         vAxis: {
