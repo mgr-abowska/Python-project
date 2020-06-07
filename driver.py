@@ -22,8 +22,7 @@ if __name__ == '__main__':
               ' _| |_ | | | |\__ \| |_    | |  | |_) || |_| || |_\n'
               '|_____||_| |_||___/ \__|   |_|  |_|__/  \___/  \__|  v1.0\n')
         print('[->] launching Inst4b0t...')
-        #  InstaBot.comments = [scrap z jsona] (Wszystkie parametry potrzebne masz w konstruktorze)
-        bot.start_session()  # bot od tego momentu sobie sam radzi
+        bot.start_session()
 
     elif command == '-analyze':
         print('[->] showing analysis...')

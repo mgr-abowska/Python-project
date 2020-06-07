@@ -9,21 +9,21 @@ import shelve
 
 def save(f):
     def persist(self):
-        self.analyze_profile(self.username)
-        db = shelve.open('statistics')
-        db[time.ctime()] = self.profile_statistics
-        db.close()
         f(self)
+        profile_statistics = self.analyze_profile(self.username)
+
+        db = shelve.open('statistics')
+        db[(time.ctime(), self.username)] = profile_statistics
+        db.close()
 
     return persist
 
 
 class InstaBot:
     def __init__(self, **kwargs):
+
         self.__dict__ = kwargs
         self.driver = webdriver.Chrome(kwargs["driver_path"])
-        print(self.__dict__, self.base_url)
-        print('test: ' + self.base_url)
 
         # ***
 
@@ -53,7 +53,7 @@ class InstaBot:
             pass
         time.sleep(3)
 
-    def end_seesion(self):
+    def end_session(self):
         self.driver.close()
 
     """
@@ -82,12 +82,12 @@ class InstaBot:
                 self.driver.get(pic)
                 profile_to_analyze = self.driver.find_element_by_xpath \
                     ('//*[@id="react-root"]/section/main/div/div[1]/article/header/div[2]/div[1]/div/a').text
-                profile_rating = self.analyze_profile(profile_to_analyze)
+                profile_rating = self.calculate_score(self.analyze_profile(profile_to_analyze))
                 self.driver.back()
 
                 print('\n[->] analysis of ' + profile_to_analyze + ' finished, score = ' + str(profile_rating))
 
-                if profile_rating > self.min_rating or max(likes_to_go + follows_to_go) < 10:
+                if profile_rating > self.min_rating or max(likes_to_go, follows_to_go) < 10:
 
                     if likes_to_go > 0:
                         time.sleep(2)
@@ -107,6 +107,8 @@ class InstaBot:
                     delay = random.randint(self.min_separation_time, self.max_separation_time)
                     print('[:/] waiting delay: ' + str("{:.2f}".format(delay / 60)) + ' [min].')
                     time.sleep(delay)
+                else:
+                    print('[!] score too low - rejecting profile.')
         iteration += 1
 
     def go_to_user(self, username):
@@ -154,24 +156,24 @@ class InstaBot:
     Analysis 
     """
 
+    def calculate_score(self, data):
+        return 0.5
+
     def analyze_profile(self, username):
 
         self.go_to_user(username)
+        time.sleep(3)
+
+        followers_count = self.get_followers_count(username)
+        following_count = self.get_following_count(username)
+
+        str_post_count = "".join(self.get_posts_count(username).split())
+        post_count = int(str_post_count)
+        average_post_likes = 0
         time.sleep(2)
 
-        return 0.6
-
-        try:
-            followers_count = self.get_followers_count(username)
-            following_count = self.get_following_count(username)
-            post_count = int(self.get_posts_count(username))
-            average_post_likes = 0
-            time.sleep(2)
-        except Exception:
-            print('error')
-
         pic_hrefs = []
-        for i in range(1, max(2, int(post_count / 9))):
+        for i in range(1, max(2, int(post_count / 20))):
             try:
                 self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
                 time.sleep(2)
@@ -181,42 +183,35 @@ class InstaBot:
                                  if '.com/p/' in elem.get_attribute('href')]
                 [pic_hrefs.append(href) for href in hrefs_in_view if href not in pic_hrefs]
 
-                if len(pic_hrefs) >= self.analyze_post_max:
-                    break
 
-            except Exception:
+            except:
                 continue
 
         if len(pic_hrefs) != 0:
 
-            # likes
-            chosen_post_count = min(int(self.analyze_post_precentage * post_count), self.analyze_post_max)
-            chosen_post_indexes = random.sample(
-                range(post_count),
-                chosen_post_count)
-
             each_post_likes = list()
 
-            for index in chosen_post_indexes:
+            for index in range(0, len(pic_hrefs)):
                 picture_url = pic_hrefs[index]
                 self.driver.get(picture_url)
                 time.sleep(2)
-                each_post_likes.append(int(self.driver.find_element_by_xpath \
-                                               (
-                                                   '//*[@id="react-root"]/section/main/div/div[1]/article/div[2]/section[2]/div/div/button/span').text))
+                str_post_likes = self.driver.find_element_by_xpath \
+                    ('//*[@id="react-root"]/section/main/div/div[1]/article/div['
+                     '2]/section[2]/div/div/button/span').text
+                each_post_likes.append(int("".join(str_post_count.split())))
 
                 # comments
                 print(self.get_comments())
+                comment_analysis = 0 / 3
 
-            average_post_likes = len(each_post_likes) / chosen_post_count
+            average_post_likes = sum(each_post_likes) / len(each_post_likes)
             print(average_post_likes)
 
-            self.profile_statistics = {'followers_count': self.get_followers_count(username),
-                                       'following_count': self.get_following_count(username),
-                                       'post_count': int(self.get_posts_count(username)),
-                                       'average_post_likes': 0}
-
-            return true
+        return {'followers_count': self.get_followers_count(self.username),
+                'following_count': self.get_following_count(self.username),
+                'post_count': int(self.get_posts_count(self.username)),
+                'average_post_likes': average_post_likes,
+                'comments_analysis': comment_analysis}
 
     def get_comments(self):
 

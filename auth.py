@@ -19,15 +19,13 @@ def login():
         return render_template('login.html')
 
     username = request.form['user']
-    password = request.form['password']
 
     user = if_exist(username)
     print(request.form['user'])
 
     if user:
-        if password == user['password']:   # hasło należy dla bezpieczeństwa solić
-            session['login'] = username  # lepiej robić to po id
-            return redirect('/')  # url for pozwala na dynamiczne określenie linków
+        session['login'] = username  # lepiej robić to po id
+        return redirect('/')  # url for pozwala na dynamiczne określenie linków
 
     return render_template('login.html')
 
