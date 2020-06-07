@@ -109,7 +109,6 @@ class CommentModel:
         x_test = self.vectorizer.transform(test_comments)
         predicted = self.model.predict(x_test)
         return predicted
-        # print(f'predicted: {predicted}')
 
     def show_score(self, test_comments, test_results):
         x_test = self.vectorizer.transform(test_comments)
