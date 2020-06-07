@@ -37,6 +37,7 @@ def activity():
     with open('data_one_day.csv', newline='') as f:
         reader = csv.reader(f)
         data = list(reader)
+    print(data)
 
     [i.pop(3) for i in data]
 
