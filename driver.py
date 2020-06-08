@@ -43,7 +43,7 @@ def main():
         for x in db.items():
             date, username = x[0].split('||')
             if username.rstrip().lstrip() == user:
-                dates.append(date)
+                dates.append(date[:date.index('.')])
                 follows.append(x[1]['followers_count'])
                 following.append(x[1]['following_count'])
                 posts.append(x[1]['post_count'])
