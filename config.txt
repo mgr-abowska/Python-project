@@ -1,7 +1,6 @@
 {"driver_path" : "C:\\Users\\Maks\\Desktop\\Inst4b0t\\chrome_driver\\chromedriver.exe",
         "base_url" : "https://www.instagram.com",
-        "hashtags" : ["polishgirl", "americangirl", "latinogirl"],
-        "comments" : ["Nice!", "cute", "wow", ";", ":D"],
+        "hashtags" : ["russiangirl", "americangirl", "latinogirl"],
         "likes_in_session" : 40,
         "follows_in_session" : 50,
         "comments_in_session" : 40,

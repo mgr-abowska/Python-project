@@ -14,14 +14,15 @@ def words_and_emoticons(text):
     for w in words:
         yield w
 
+
 def formated(raw):
     """Comment formater into a modifiable list"""
-    comments=[]
+    comments = []
     for i in range(len(raw)):
-            comment = raw[i]
-            comment = comment.lower()
-            comment = comment.rstrip('\\') # remove '\' at the end
-            comments.append(comment)
+        comment = raw[i]
+        comment = comment.lower()
+        comment = comment.rstrip('\\')  # remove '\' at the end
+        comments.append(comment)
     return comments
 
 
@@ -105,6 +106,8 @@ class CommentModel:
             self.vectorizer = pickle.load(vectorizer)
 
     def predict(self, test_comments):
+
+        print(test_comments)
         test_comments = formated(test_comments)
         x_test = self.vectorizer.transform(test_comments)
         predicted = self.model.predict(x_test)
