@@ -6,7 +6,6 @@ import json
 import main
 import matplotlib.pyplot as plt
 
-
 def main():
     command = sys.argv[1]
     if command == '-launch':
@@ -29,11 +28,11 @@ def main():
     elif command == '-analyze':
         user = sys.argv[2]
         print('[->] showing analysis...')
-        main.main.run(debug=True)
         data = []
         db = shelve.open('db')
-        if not db.items:
-            print('brak danych!')
+        if db.items == []:
+            print('No data :(')
+            db.close()
             return
         dates = []
         follows = []
@@ -50,18 +49,21 @@ def main():
                 posts.append(x[1]['post_count'])
                 likes.append(x[1]['average_post_likes'])
                 comments.append(x[1]['comments_analysis'])
-        if not dates:
-            print('brak danych!')
+        db.close()
+        if dates == []:
+            print('No data about user: ' + user)
             return
-        plot = plt.figure()
-        subplot1 = plot.add_subplot()
-        subplot1.scatter(dates, follows, label='followers')
-        subplot1.scatter(dates, likes, label='average post likes')
-        subplot1.scatter(dates, following, label='following')
-        subplot1.scatter(dates, posts, label='post count')
-        subplot1.scatter(dates, comments, label='comments analisys')
+        if len(dates) == 1:
+            print('To little data about user: ' + user)
+            return
+        plt.plot(dates, follows, label='followers')
+        plt.plot(dates, likes, label='average post likes')
+        plt.plot(dates, following, label='following')
+        plt.plot(dates, posts, label='post count')
+        plt.plot(dates, comments, label='comments analisys')
+        plt.legend()
+        plt.title('User: ' + user)
         plt.show()
-
     elif command == '-help' or command == '-?':
         pass
     else:
